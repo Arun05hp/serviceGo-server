@@ -15,14 +15,28 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
-      mobile: {
+
+      mobileNumber: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        unique: true,
+      },
+      dob: { type: DataTypes.DATE, allowNull: true },
+      profileImg: { type: DataTypes.STRING, allowNull: true },
+      gender: { type: DataTypes.STRING, allowNull: true },
       otp: {
         type: DataTypes.STRING,
+        allowNull: true,
+      },
+      status: {
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
     },
