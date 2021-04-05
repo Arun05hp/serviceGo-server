@@ -9,11 +9,9 @@ const authRoutes = require("./routes/authRoutes");
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 app.use("/user", authRoutes);
 
 app.listen(port, async () => {
   console.log(`Listening on Port ${port}...`);
-  await sequelize.sync({ force: true });
-  console.log("DB Sync");
+  await sequelize.sync();
 });

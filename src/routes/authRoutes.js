@@ -32,6 +32,7 @@ router.post("/sendOtp", async (req, res) => {
     const options = {
       method: "POST",
     };
+
     const user = await User.findOne({ where: { mobileNumber: mobileNumber } });
     if (!user) {
       await User.create({
@@ -39,11 +40,11 @@ router.post("/sendOtp", async (req, res) => {
         otp: otp,
         status: 0,
       });
-      sendOtp(url, options);
+      // sendOtp(url, options);
     } else {
       Object.assign(user, { otp: otp });
       await user.save();
-      sendOtp(url, options);
+      // sendOtp(url, options);
     }
 
     res.json({
@@ -65,7 +66,7 @@ router.post("/verifyOtp", async (req, res) => {
     const user = await User.findOne({
       where: { mobileNumber: mobileNumber, otp: otp },
     });
-    console.log(user);
+
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     } else {
@@ -89,13 +90,14 @@ router.post("/verifyOtp", async (req, res) => {
 });
 
 router.put("/register/:id", async (req, res) => {
+  console.log("user");
   const data = req.body;
   const id = req.params.id;
   // const { error } = validateProfile(data);
   // if (error) return res.status(400).json({ message: error.details[0].message });
   try {
     const user = await User.findByPk(id);
-
+    console.log(user);
     if (!user) return res.status(400).json({ message: "User not found" });
 
     if (user.dataValues.status === 0) {
