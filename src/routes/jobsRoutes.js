@@ -29,38 +29,32 @@ router.post("/create", (req, res) => {
     console.log(req.files);
     let images = null;
     if (req.files) {
-      let imagesPath = req.files.map((item) => item.path);
-      console.log(imagesPath);
+      let imagesPath = req.files.map((item) =>
+        item.path.replace(/\\/g, "/").substring(4)
+      );
+      images = JSON.stringify(imagesPath);
     }
 
-    //   const data = req.body;
-    //   const fileUrl = req.file.path.replace(/\\/g, "/").substring(4);
-    //   try {
-    //     const user = await User.findByPk(data.id);
-    //     console.log(user);
-    //     if (!user) return res.status(400).json({ message: "User not found" });
+    const data = req.body;
 
-    //     if (user.dataValues.status === 0) {
-    //       Object.assign(user, {
-    //         ...data,
-    //         profileImg: fileUrl,
-    //         otp: "",
-    //         status: 1,
-    //       });
-    //       await user.save();
-    //     } else {
-    //       Object.assign(user, { ...data, profileImg: fileUrl, otp: "" });
-    //       await user.save();
-    //     }
+    try {
+      const job = await Jobs.findOne({
+        where: { userid: data.userid },
+      });
 
-    //     res.json({
-    //       message: "Profile Updated Successfully",
-    //       userId: user.dataValues,
-    //     });
-    //   } catch (error) {
-    //     return res.status(500).json({ message: error });
-    //   }
-    return res.status(500).json({ message: "hello" });
+      if (job) return res.status(400).json({ message: "Already Registered" });
+      let newjob = await Jobs.create({
+        ...data,
+        images,
+      });
+
+      res.json({
+        message: "Job created",
+        newjob,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: error });
+    }
   });
 });
 
