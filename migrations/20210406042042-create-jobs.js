@@ -1,40 +1,33 @@
 "use strict";
 module.exports = {
   up: async (queryInterface, DataTypes) => {
-    await queryInterface.createTable("Users", {
+    await queryInterface.createTable("Jobs", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-
-      mobileNumber: {
-        type: DataTypes.STRING,
+      userid: {
         allowNull: false,
-        unique: true,
-      },
-      email: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        unique: true,
-      },
-      dob: { type: DataTypes.DATE, allowNull: true },
-      profileImg: { type: DataTypes.STRING, allowNull: true },
-      address: { type: DataTypes.STRING, allowNull: true },
-      gender: { type: DataTypes.STRING, allowNull: true },
-      otp: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      status: {
         type: DataTypes.INTEGER,
+      },
+      category: {
+        type: DataTypes.STRING,
         allowNull: false,
       },
+      specializedArea: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      location: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      experience: { type: DataTypes.STRING, allowNull: false },
+      images: { type: DataTypes.STRING, allowNull: false },
+      servicecharge: { type: DataTypes.DATE, allowNull: true },
+
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,
@@ -46,6 +39,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, DataTypes) => {
-    await queryInterface.dropTable("Users");
+    await queryInterface.dropTable("Jobs");
   },
 };

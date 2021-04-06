@@ -1,11 +1,28 @@
 const { User } = require("../../models");
 const express = require("express");
+const multer = require("multer");
+const path = require("path");
 const requireAuth = require("../middlewares/auth");
 const jwt = require("jsonwebtoken");
-const axios = require("axios");
+
 const https = require("https");
 
 const router = express.Router();
+
+const storage = multer.diskStorage({
+  destination: `${path.basename(path.dirname(__dirname))}/uploads/profiles/`,
+  filename: (req, file, cb) => {
+    const fileName = `${Date.now()}${path.extname(file.originalname)}`;
+    cb(null, fileName);
+  },
+});
+
+const uploadImage = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 2,
+  },
+}).single("photo");
 
 async function sendOtp(url, options) {
   const req = await https.request(url, options, (res) => {
@@ -79,10 +96,7 @@ router.post("/verifyOtp", async (req, res) => {
     res.json({
       message: "Verified Successfully",
       newRegistration,
-      userDetails: {
-        id: user.dataValues.id,
-        mobileNumber: user.dataValues.mobileNumber,
-      },
+      userDetails: user.dataValues,
     });
   } catch (error) {
     return res.status(500).json({ message: error });
@@ -91,27 +105,60 @@ router.post("/verifyOtp", async (req, res) => {
 
 router.put("/register/:id", async (req, res) => {
   console.log("user");
-  const data = req.body;
-  const id = req.params.id;
-  // const { error } = validateProfile(data);
-  // if (error) return res.status(400).json({ message: error.details[0].message });
-  try {
-    const user = await User.findByPk(id);
-    console.log(user);
-    if (!user) return res.status(400).json({ message: "User not found" });
+});
 
-    if (user.dataValues.status === 0) {
-      Object.assign(user, { ...data, otp: "", status: 1 });
-      await user.save();
-    } else return res.status(400).json({ message: "User Already Registered" });
+router.post("/image", (req, res) => {
+  uploadImage(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      return res.send({ error: "File Too Large" });
+    } else if (err) {
+      return res.send({ error: "Something Went Wrong" });
+    }
 
-    res.json({
-      message: "Profile Updated Successfully",
-      userId: user.dataValues,
-    });
-  } catch (error) {
-    return res.status(500).json({ message: error });
-  }
+    let fileUrl = req.file.path.replace(/\\/g, "/").substring(4);
+    console.log(req.file, fileUrl);
+    if (req.file) return res.json({ msg: "Image uploaded" });
+    res.send("Image upload failed");
+  });
+});
+
+router.post("/update", (req, res) => {
+  uploadImage(req, res, async (err) => {
+    if (err instanceof multer.MulterError)
+      return res.send({ error: "File Too Large" });
+    else if (err) return res.send({ error: "Something Went Wrong" });
+
+    if (req.file) {
+      const data = req.body;
+      const fileUrl = req.file.path.replace(/\\/g, "/").substring(4);
+      try {
+        const user = await User.findByPk(data.id);
+        console.log(user);
+        if (!user) return res.status(400).json({ message: "User not found" });
+
+        if (user.dataValues.status === 0) {
+          Object.assign(user, {
+            ...data,
+            profileImg: fileUrl,
+            otp: "",
+            status: 1,
+          });
+          await user.save();
+        } else {
+          Object.assign(user, { ...data, profileImg: fileUrl, otp: "" });
+          await user.save();
+        }
+
+        res.json({
+          message: "Profile Updated Successfully",
+          userDetails: user.dataValues,
+        });
+      } catch (error) {
+        return res.status(500).json({ message: error });
+      }
+    }
+    res.status(400).json({ message: "Image Not Found" });
+  });
 });
 
 module.exports = router;

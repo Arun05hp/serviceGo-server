@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       dob: { type: DataTypes.DATE, allowNull: true },
       profileImg: { type: DataTypes.STRING, allowNull: true },
+      address: { type: DataTypes.STRING, allowNull: true },
       gender: { type: DataTypes.STRING, allowNull: true },
       otp: {
         type: DataTypes.STRING,
