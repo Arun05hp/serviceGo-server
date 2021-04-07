@@ -37,11 +37,10 @@ async function sendOtp(url, options) {
 }
 
 router.post("/sendOtp", async (req, res) => {
-  const data = req.body;
+  const { mobileNumber } = req.body;
   //   const { error } = validate(data);
   //   if (error) return res.status(400).json({ message: error.details[0].message });
 
-  const { mobileNumber } = data;
   console.log(mobileNumber);
   let otp = Math.floor(1000 + Math.random() * 9000);
   try {
@@ -73,22 +72,18 @@ router.post("/sendOtp", async (req, res) => {
 });
 
 router.post("/verifyOtp", async (req, res) => {
-  const data = req.body;
+  const { mobileNumber, otp } = req.body;
   //   const { error } = auth(data);
   //   if (error) return res.status(400).json({ message: error.details[0].message });
 
-  const { mobileNumber, otp } = data;
   let newRegistration = false;
   try {
     const user = await User.findOne({
       where: { mobileNumber: mobileNumber, otp: otp },
     });
 
-    if (!user) {
-      return res.status(400).json({ message: "User not found" });
-    } else {
-      if (user.dataValues.status === 0) newRegistration = true;
-    }
+    if (!user) return res.status(400).json({ message: "User not found" });
+    else if (user.dataValues.status === 0) newRegistration = true;
 
     // const token = jwt.sign({ userId: user.iduser }, config.Key_String, {
     //   expiresIn: "5d",
@@ -109,11 +104,9 @@ router.put("/register/:id", async (req, res) => {
 
 router.post("/image", (req, res) => {
   uploadImage(req, res, (err) => {
-    if (err instanceof multer.MulterError) {
+    if (err instanceof multer.MulterError)
       return res.send({ error: "File Too Large" });
-    } else if (err) {
-      return res.send({ error: "Something Went Wrong" });
-    }
+    else if (err) return res.send({ error: "Something Went Wrong" });
 
     let fileUrl = req.file.path.replace(/\\/g, "/").substring(4);
     console.log(req.file, fileUrl);

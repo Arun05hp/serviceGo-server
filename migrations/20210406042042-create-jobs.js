@@ -26,7 +26,7 @@ module.exports = {
       },
       experience: { type: DataTypes.STRING, allowNull: false },
       images: { type: DataTypes.STRING, allowNull: false },
-      servicecharge: { type: DataTypes.DATE, allowNull: true },
+      serviceCharge: { type: DataTypes.DATE, allowNull: true },
 
       createdAt: {
         allowNull: false,
