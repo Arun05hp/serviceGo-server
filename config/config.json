@@ -6,6 +6,7 @@
     "host": "aws-servicego.cdxrqpyi70cl.ap-south-1.rds.amazonaws.com",
     "dialect": "mysql"
   },
+
   "test": {
     "username": "root",
     "password": null,
