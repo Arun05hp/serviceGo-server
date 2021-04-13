@@ -79,10 +79,12 @@ router.post("/verifyOtp", async (req, res) => {
   let newRegistration = false;
   try {
     const user = await User.findOne({
-      where: { mobileNumber: mobileNumber, otp: otp },
+      where: { mobileNumber: mobileNumber },
     });
 
     if (!user) return res.status(400).json({ message: "User not found" });
+    else if (user.dataValues.otp !== otp)
+      res.status(400).json({ message: "Invalid OTP" });
     else if (user.dataValues.status === 0) newRegistration = true;
 
     // const token = jwt.sign({ userId: user.iduser }, config.Key_String, {

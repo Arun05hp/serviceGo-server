@@ -23,7 +23,7 @@ module.exports = {
         allowNull: true,
         unique: true,
       },
-      dob: { type: DataTypes.DATE, allowNull: true },
+      dob: { type: DataTypes.STRING, allowNull: true },
       profileImg: { type: DataTypes.STRING, allowNull: true },
       address: { type: DataTypes.STRING, allowNull: true },
       gender: { type: DataTypes.STRING, allowNull: true },

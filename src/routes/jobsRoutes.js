@@ -54,6 +54,7 @@ router.post("/create", (req, res) => {
         newjob,
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: error });
     }
   });

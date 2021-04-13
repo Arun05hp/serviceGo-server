@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       experience: { type: DataTypes.STRING, allowNull: false },
       images: { type: DataTypes.STRING, allowNull: false },
-      serviceCharge: { type: DataTypes.DATE, allowNull: true },
+      serviceCharge: { type: DataTypes.STRING, allowNull: true },
       feedback: { type: DataTypes.STRING, allowNull: true },
       earning: { type: DataTypes.STRING, allowNull: true },
     },
