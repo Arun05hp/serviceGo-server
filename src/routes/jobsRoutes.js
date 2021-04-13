@@ -1,6 +1,7 @@
 const { Jobs } = require("../../models");
 const express = require("express");
 const multer = require("multer");
+const { Op } = require("sequelize");
 const path = require("path");
 const requireAuth = require("../middlewares/auth");
 const jwt = require("jsonwebtoken");
@@ -36,7 +37,7 @@ router.post("/create", (req, res) => {
     }
 
     const data = req.body;
-
+    console.log(req.body);
     try {
       const job = await Jobs.findOne({
         where: { userid: data.userid },
@@ -56,6 +57,29 @@ router.post("/create", (req, res) => {
       return res.status(500).json({ message: error });
     }
   });
+});
+
+router.post("/list", async (req, res) => {
+  const { userid, location, category } = req.body;
+  console.log(req.body);
+  try {
+    const worker = await Jobs.findAll({
+      where: {
+        location,
+        category,
+        userid: {
+          [Op.ne]: userid,
+        },
+      },
+      include: ["user"],
+    });
+    res.json({
+      message: "success",
+      worker,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
 });
 
 module.exports = router;

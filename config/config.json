@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "root",
-    "password": null,
+    "username": "admin",
+    "password": "ServiceGo2021",
     "database": "servicego",
-    "host": "127.0.0.1",
+    "host": "aws-servicego.cdxrqpyi70cl.ap-south-1.rds.amazonaws.com",
     "dialect": "mysql"
   },
   "test": {

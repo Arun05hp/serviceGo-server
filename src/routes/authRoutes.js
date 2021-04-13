@@ -117,14 +117,15 @@ router.post("/image", (req, res) => {
 
 router.post("/update", (req, res) => {
   uploadImage(req, res, async (err) => {
-    if (err instanceof multer.MulterError)
-      return res.send({ error: "File Too Large" });
-    else if (err) return res.send({ error: "Something Went Wrong" });
+    try {
+      if (err instanceof multer.MulterError)
+        return res.send({ error: "File Too Large" });
+      else if (err) return res.send({ error: "Something Went Wrong" });
 
-    if (req.file) {
-      const data = req.body;
-      const fileUrl = req.file.path.replace(/\\/g, "/").substring(4);
-      try {
+      if (req.file) {
+        const data = req.body;
+        const fileUrl = req.file.path.replace(/\\/g, "/").substring(4);
+        console.log(data.id);
         const user = await User.findByPk(data.id);
         console.log(user);
         if (!user) return res.status(400).json({ message: "User not found" });
@@ -141,16 +142,16 @@ router.post("/update", (req, res) => {
           Object.assign(user, { ...data, profileImg: fileUrl, otp: "" });
           await user.save();
         }
-
+        console.log(user.dataValues);
         res.json({
           message: "Profile Updated Successfully",
           userDetails: user.dataValues,
         });
-      } catch (error) {
-        return res.status(500).json({ message: error });
       }
+      res.status(400).json({ message: "Image Not Found" });
+    } catch (error) {
+      return res.status(500).json({ message: error });
     }
-    res.status(400).json({ message: "Image Not Found" });
   });
 });
 
