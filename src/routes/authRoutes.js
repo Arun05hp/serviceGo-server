@@ -80,6 +80,7 @@ router.post("/verifyOtp", async (req, res) => {
   try {
     const user = await User.findOne({
       where: { mobileNumber: mobileNumber },
+      include: ["jobprofile"],
     });
 
     if (!user) return res.status(400).json({ message: "User not found" });
