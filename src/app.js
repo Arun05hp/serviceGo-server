@@ -8,6 +8,7 @@ const port = process.env.PORT || 5000;
 const authRoutes = require("./routes/authRoutes");
 const jobRoutes = require("./routes/jobsRoutes");
 const dealsRoutes = require("./routes/dealsRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -15,7 +16,7 @@ app.use("/uploads", express.static("src/uploads"));
 app.use("/user", authRoutes);
 app.use("/job", jobRoutes);
 app.use("/deal", dealsRoutes);
-
+app.use("/notification", notificationRoutes);
 app.listen(port, async () => {
   console.log(`Listening on Port ${port}...`);
   await sequelize.sync();
