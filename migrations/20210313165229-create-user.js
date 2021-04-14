@@ -35,6 +35,7 @@ module.exports = {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      wishlist: { type: DataTypes.STRING, allowNull: true },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,

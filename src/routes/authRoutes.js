@@ -1,4 +1,4 @@
-const { User } = require("../../models");
+const { User, Jobs } = require("../../models");
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
@@ -138,6 +138,7 @@ router.post("/update", (req, res) => {
             profileImg: fileUrl,
             otp: "",
             status: 1,
+            wishlist: "[]",
           });
           await user.save();
         } else {
@@ -155,6 +156,80 @@ router.post("/update", (req, res) => {
       return res.status(500).json({ message: error });
     }
   });
+});
+
+router.post("/wishlist", async (req, res) => {
+  const { userid, workerid } = req.body;
+
+  try {
+    const user = await User.findOne({
+      where: { id: userid },
+    });
+
+    if (!user) return res.status(400).json({ message: "User not found" });
+
+    let wishlist = JSON.parse(user.dataValues.wishlist);
+    wishlist = JSON.stringify([...wishlist, workerid]);
+    Object.assign(user, {
+      wishlist,
+    });
+    await user.save();
+
+    res.json({
+      message: "Success",
+      userDetails: user.dataValues,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
+});
+router.delete("/wishlist/:userid/:workerid", async (req, res) => {
+  const { userid, workerid } = req.params;
+
+  try {
+    const user = await User.findOne({
+      where: { id: userid },
+    });
+
+    if (!user) return res.status(400).json({ message: "User not found" });
+
+    let wishlist = JSON.parse(user.dataValues.wishlist);
+    if (wishlist.length > 0) {
+      wishlist = JSON.stringify(
+        wishlist.filter((id) => id !== Number(workerid))
+      );
+      Object.assign(user, {
+        wishlist,
+      });
+      await user.save();
+    }
+
+    res.json({
+      message: "Success",
+      userDetails: user.dataValues,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
+});
+
+router.post("/getwishlist", async (req, res) => {
+  const { ids } = req.body;
+  console.log(ids);
+  try {
+    const worker = await Jobs.findAll({
+      where: {
+        userid: ids,
+      },
+      include: ["user"],
+    });
+    res.json({
+      message: "success",
+      worker,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
 });
 
 module.exports = router;

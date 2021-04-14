@@ -18,5 +18,5 @@ app.use("/deal", dealsRoutes);
 
 app.listen(port, async () => {
   console.log(`Listening on Port ${port}...`);
-  await sequelize.sync({ force: true });
+  await sequelize.sync();
 });
