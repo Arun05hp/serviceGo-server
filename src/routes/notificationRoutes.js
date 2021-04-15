@@ -74,7 +74,7 @@ router.post("/accept/:id", async (req, res) => {
       ]);
     } else {
       if (
-        owner.dataValues.contacts.filter(
+        JSON.parse(owner.dataValues.contacts).filter(
           (item) => item.id === requester.dataValues.userid
         ).length < 1
       ) {
@@ -104,7 +104,7 @@ router.post("/accept/:id", async (req, res) => {
       ]);
     } else {
       if (
-        requester.dataValues.contacts.filter(
+        JSON.parse(requester.dataValues.contacts).filter(
           (item) => item.id === owner.dataValues.userid
         ).length < 1
       ) {
@@ -124,6 +124,7 @@ router.post("/accept/:id", async (req, res) => {
 
     res.json({ message: "Success" });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: error });
   }
 });
