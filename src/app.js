@@ -9,6 +9,7 @@ const authRoutes = require("./routes/authRoutes");
 const jobRoutes = require("./routes/jobsRoutes");
 const dealsRoutes = require("./routes/dealsRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const contactRoutes = require("./routes/contactRoutes");
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -17,6 +18,7 @@ app.use("/user", authRoutes);
 app.use("/job", jobRoutes);
 app.use("/deal", dealsRoutes);
 app.use("/notification", notificationRoutes);
+app.use("/contact", contactRoutes);
 app.listen(port, async () => {
   console.log(`Listening on Port ${port}...`);
   await sequelize.sync();

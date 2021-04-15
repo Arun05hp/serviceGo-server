@@ -2,11 +2,8 @@ const { User, Jobs } = require("../../models");
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
-const requireAuth = require("../middlewares/auth");
-const jwt = require("jsonwebtoken");
 
 const https = require("https");
-
 const router = express.Router();
 
 const storage = multer.diskStorage({
@@ -159,7 +156,7 @@ router.post("/update", (req, res) => {
   });
 });
 
-router.post("/wishlist", async (req, res) => {
+router.post("/wishlist/:id", async (req, res) => {
   const { userid, workerid } = req.body;
 
   try {
