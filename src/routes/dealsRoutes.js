@@ -1,11 +1,5 @@
 const { Deals } = require("../../models");
 const express = require("express");
-const multer = require("multer");
-const path = require("path");
-const requireAuth = require("../middlewares/auth");
-const jwt = require("jsonwebtoken");
-
-const https = require("https");
 
 const router = express.Router();
 router.post("/create", async (req, res) => {

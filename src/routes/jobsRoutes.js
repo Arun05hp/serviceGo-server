@@ -74,6 +74,7 @@ router.post("/list", async (req, res) => {
       },
       include: ["user"],
     });
+    console.log(worker);
     res.json({
       message: "success",
       worker,
