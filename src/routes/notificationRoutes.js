@@ -70,6 +70,7 @@ router.post("/accept/:id", async (req, res) => {
           id: requester.dataValues.userid,
           uuid: requester.dataValues.uuid,
           roomId: roomId,
+          workerId: data.senderId,
         },
       ];
     } else {
@@ -84,6 +85,7 @@ router.post("/accept/:id", async (req, res) => {
             id: requester.dataValues.userid,
             uuid: requester.dataValues.uuid,
             roomId: roomId,
+            workerId: data.senderId,
           },
         ];
       }
@@ -100,6 +102,7 @@ router.post("/accept/:id", async (req, res) => {
           id: owner.dataValues.userid,
           uuid: owner.dataValues.uuid,
           roomId: roomId,
+          workerId: data.senderId,
         },
       ];
     } else {
@@ -114,6 +117,7 @@ router.post("/accept/:id", async (req, res) => {
             id: owner.dataValues.userid,
             uuid: owner.dataValues.uuid,
             roomId: roomId,
+            workerId: data.senderId,
           },
         ];
       }

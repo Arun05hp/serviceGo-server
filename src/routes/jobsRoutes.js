@@ -3,9 +3,7 @@ const express = require("express");
 const multer = require("multer");
 const { Op } = require("sequelize");
 const path = require("path");
-const requireAuth = require("../middlewares/auth");
-const jwt = require("jsonwebtoken");
-const https = require("https");
+
 const router = express.Router();
 
 const storage = multer.diskStorage({
@@ -27,23 +25,24 @@ router.post("/create", (req, res) => {
   uploadImages(req, res, async (err) => {
     if (err instanceof multer.MulterError) return res.send({ error: err });
     else if (err) return res.send({ error: "Something Went Wrong" });
-    console.log(req.files);
+
     let images = null;
     if (req.files) {
       let imagesPath = req.files.map((item) =>
         item.path.replace(/\\/g, "/").substring(4)
       );
-      images = JSON.stringify(imagesPath);
+      images = imagesPath;
     }
 
     const data = req.body;
-    console.log(req.body);
+
     try {
       const job = await Jobs.findOne({
         where: { userid: data.userid },
       });
 
       if (job) return res.status(400).json({ message: "Already Registered" });
+      data.specializedArea = JSON.parse(data.specializedArea);
       let newjob = await Jobs.create({
         ...data,
         images,
@@ -62,7 +61,7 @@ router.post("/create", (req, res) => {
 
 router.post("/list", async (req, res) => {
   const { userid, location, category } = req.body;
-  console.log(req.body);
+
   try {
     const worker = await Jobs.findAll({
       where: {

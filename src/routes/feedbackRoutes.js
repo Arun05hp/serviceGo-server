@@ -1,4 +1,4 @@
-const { User, Jobs } = require("../../models");
+const { feedback } = require("../../models");
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
@@ -13,17 +13,18 @@ router.post("/create", async (req, res) => {
   const { userid, rating, comment, recommend } = req.body;
 
   try {
-    const feedback = await feedback.findOne({
+    const feedbackData = await feedback.findOne({
       where: {
         id: userid,
       },
     });
 
-    if (!user) return res.status(400).json({ message: "User not found" });
+    if (!feedbackData)
+      return res.status(400).json({ message: "User not found" });
 
-    let feed = JSON.parse(user.dataValues.feedback);
+    let feed = JSON.parse(feedbackData.dataValues.feedback);
     feed = JSON.stringify([...req.body]);
-    Object.assign(user, {
+    Object.assign(feedbackData, {
       feed,
     });
     await user.save();

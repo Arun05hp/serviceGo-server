@@ -17,7 +17,7 @@ module.exports = {
         allowNull: false,
       },
       specializedArea: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSON,
         allowNull: false,
       },
       location: {
@@ -25,9 +25,9 @@ module.exports = {
         allowNull: false,
       },
       experience: { type: DataTypes.STRING, allowNull: false },
-      images: { type: DataTypes.STRING, allowNull: false },
+      images: { type: DataTypes.JSON, allowNull: false },
       serviceCharge: { type: STRING, allowNull: true },
-      feedback: { type: DataTypes.STRING, allowNull: true },
+      feedback: { type: DataTypes.JSON, allowNull: true },
       earning: { type: DataTypes.STRING, allowNull: true },
       createdAt: {
         allowNull: false,

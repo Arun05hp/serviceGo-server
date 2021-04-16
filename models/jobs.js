@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       specializedArea: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSON,
         allowNull: false,
       },
       location: {
@@ -31,9 +31,9 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       experience: { type: DataTypes.STRING, allowNull: false },
-      images: { type: DataTypes.STRING, allowNull: false },
+      images: { type: DataTypes.JSON, allowNull: false },
       serviceCharge: { type: DataTypes.STRING, allowNull: true },
-      feedback: { type: DataTypes.STRING, allowNull: true },
+      feedback: { type: DataTypes.JSON, allowNull: true },
       earning: { type: DataTypes.STRING, allowNull: true },
     },
 

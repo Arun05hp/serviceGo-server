@@ -109,7 +109,7 @@ router.post("/image", (req, res) => {
     else if (err) return res.send({ error: "Something Went Wrong" });
 
     let fileUrl = req.file.path.replace(/\\/g, "/").substring(4);
-    console.log(req.file, fileUrl);
+
     if (req.file) return res.json({ msg: "Image uploaded" });
     res.send("Image upload failed");
   });
@@ -125,9 +125,9 @@ router.post("/update", (req, res) => {
       if (req.file) {
         const data = req.body;
         const fileUrl = req.file.path.replace(/\\/g, "/").substring(4);
-        console.log(data.id);
+
         const user = await User.findByPk(data.id);
-        console.log(user);
+
         if (!user) return res.status(400).json({ message: "User not found" });
 
         if (user.dataValues.status === 0) {
@@ -136,7 +136,7 @@ router.post("/update", (req, res) => {
             profileImg: fileUrl,
             otp: "",
             status: 1,
-            wishlist: "[]",
+            wishlist: [],
           });
           await user.save();
         } else {
@@ -156,7 +156,7 @@ router.post("/update", (req, res) => {
   });
 });
 
-router.post("/wishlist/:id", async (req, res) => {
+router.post("/addToWishlist", async (req, res) => {
   const { userid, workerid } = req.body;
 
   try {
@@ -166,8 +166,7 @@ router.post("/wishlist/:id", async (req, res) => {
 
     if (!user) return res.status(400).json({ message: "User not found" });
 
-    let wishlist = JSON.parse(user.dataValues.wishlist);
-    wishlist = JSON.stringify([...wishlist, workerid]);
+    let wishlist = [...user.dataValues.wishlist, workerid];
     Object.assign(user, {
       wishlist,
     });
@@ -178,6 +177,7 @@ router.post("/wishlist/:id", async (req, res) => {
       userDetails: user.dataValues,
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: error });
   }
 });
@@ -191,11 +191,9 @@ router.delete("/wishlist/:userid/:workerid", async (req, res) => {
 
     if (!user) return res.status(400).json({ message: "User not found" });
 
-    let wishlist = JSON.parse(user.dataValues.wishlist);
+    let wishlist = user.dataValues.wishlist;
     if (wishlist.length > 0) {
-      wishlist = JSON.stringify(
-        wishlist.filter((id) => id !== Number(workerid))
-      );
+      wishlist = wishlist.filter((id) => id !== Number(workerid));
       Object.assign(user, {
         wishlist,
       });
