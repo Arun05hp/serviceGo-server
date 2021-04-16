@@ -25,13 +25,11 @@ router.get("/getAll/:id", async (req, res) => {
         userid: id,
       },
     });
-    let contactsList = JSON.parse(contact[0].contacts);
     contact[0].contacts = await Promise.all(
-      contactsList.map(async (item) => {
+      contact[0].contacts.map(async (item) => {
         return await fetchUserInfo(item);
       })
     );
-
     return res.json({
       message: "Success",
       contacts: contact,

@@ -10,7 +10,7 @@ module.exports = {
       },
       userid: { type: DataTypes.STRING, allowNull: false },
       uuid: { type: DataTypes.STRING, allowNull: false },
-      contacts: { type: DataTypes.STRING, allowNull: false },
+      contacts: { type: DataTypes.JSON, allowNull: false },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,

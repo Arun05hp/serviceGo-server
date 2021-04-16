@@ -65,27 +65,27 @@ router.post("/accept/:id", async (req, res) => {
     }
 
     if (owner.dataValues.contacts == "" || owner.dataValues.contacts == null) {
-      owner.contacts = JSON.stringify([
+      owner.contacts = [
         {
           id: requester.dataValues.userid,
           uuid: requester.dataValues.uuid,
           roomId: roomId,
         },
-      ]);
+      ];
     } else {
       if (
-        JSON.parse(owner.dataValues.contacts).filter(
+        owner.dataValues.contacts.filter(
           (item) => item.id === requester.dataValues.userid
         ).length < 1
       ) {
-        owner.contacts = JSON.stringify([
+        owner.contacts = [
           ...owner.dataValues.contacts,
           {
             id: requester.dataValues.userid,
             uuid: requester.dataValues.uuid,
             roomId: roomId,
           },
-        ]);
+        ];
       }
     }
 
@@ -95,27 +95,27 @@ router.post("/accept/:id", async (req, res) => {
       requester.dataValues.contacts == "" ||
       requester.dataValues.contacts == null
     ) {
-      requester.contacts = JSON.stringify([
+      requester.contacts = [
         {
           id: owner.dataValues.userid,
           uuid: owner.dataValues.uuid,
           roomId: roomId,
         },
-      ]);
+      ];
     } else {
       if (
-        JSON.parse(requester.dataValues.contacts).filter(
+        requester.dataValues.contacts.filter(
           (item) => item.id === owner.dataValues.userid
         ).length < 1
       ) {
-        requester.contacts = JSON.stringify([
+        requester.contacts = [
           ...requester.dataValues.contacts,
           {
             id: owner.dataValues.userid,
             uuid: owner.dataValues.uuid,
             roomId: roomId,
           },
-        ]);
+        ];
       }
     }
     await requester.save();
