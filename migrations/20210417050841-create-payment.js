@@ -17,6 +17,7 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      jobid: { type: DataTypes.STRING, allowNull: false },
       amount: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -25,6 +26,7 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      status: { type: DataTypes.STRING, allowNull: false },
     });
   },
 

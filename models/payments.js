@@ -25,15 +25,17 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      jobid: { type: DataTypes.STRING, allowNull: false },
       transactionid: {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      status: { type: DataTypes.STRING, allowNull: false },
     },
     {
       sequelize,
       modelName: "Payment",
-      tableName: "Payment",
+      tableName: "payment",
     }
   );
   return Payment;
