@@ -16,7 +16,7 @@ module.exports = {
         allowNull: false,
         type: DataTypes.STRING,
       },
-      jobid: {
+      dealid: {
         allowNull: false,
         type: DataTypes.STRING,
       },
@@ -24,6 +24,7 @@ module.exports = {
         allowNull: false,
         type: DataTypes.STRING,
       },
+      status: { type: DataTypes.STRING, allowNull: true },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

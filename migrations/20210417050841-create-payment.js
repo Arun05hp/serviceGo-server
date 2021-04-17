@@ -17,7 +17,7 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      jobid: { type: DataTypes.STRING, allowNull: false },
+      dealid: { type: DataTypes.STRING, allowNull: false },
       amount: {
         type: DataTypes.STRING,
         allowNull: false,

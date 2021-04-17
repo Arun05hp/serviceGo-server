@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      jobid: { type: DataTypes.STRING, allowNull: false },
+      dealid: { type: DataTypes.STRING, allowNull: false },
       transactionid: {
         type: DataTypes.STRING,
         allowNull: false,

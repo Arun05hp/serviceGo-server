@@ -20,7 +20,14 @@ router.post("/create", async (req, res) => {
   console.log(req.body);
 
   try {
-    await Deals.create({ userid, workerid, duration, startDate, amount });
+    await Deals.create({
+      userid,
+      workerid,
+      duration,
+      startDate,
+      amount,
+      status: "0",
+    });
     res.json({
       message: "Success",
     });
