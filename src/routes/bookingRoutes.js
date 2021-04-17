@@ -1,4 +1,4 @@
-const { Deals, User, Jobs } = require("../../models");
+const { Deals, User, Jobs, Bookings } = require("../../models");
 const express = require("express");
 
 const router = express.Router();
@@ -10,53 +10,38 @@ async function fetchUserInfo(item) {
       id: item.workerid,
     },
     include: [{ model: Jobs, as: "jobprofile", attributes: ["category"] }],
-    attributes: ["id", "name", "mobileNumber"],
+    attributes: ["id", "name", "mobileNumber", "profileImg"],
   });
-  return { ...item, workerProfile: userDetails };
+
+  const dealsDetails = await Deals.findOne({
+    raw: true,
+    where: {
+      id: item.dealid,
+    },
+  });
+  return { ...item, workerProfile: userDetails, dealsDetails };
 }
-
-router.post("/create", async (req, res) => {
-  const { userid, workerid, duration, startDate, amount } = req.body;
-  console.log(req.body);
-
-  try {
-    await Deals.create({
-      userid,
-      workerid,
-      duration,
-      startDate,
-      amount,
-      status: "0",
-    });
-    res.json({
-      message: "Success",
-    });
-  } catch (error) {
-    return res.status(500).json({ message: error });
-  }
-});
 
 router.get("/getAll/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
-    let deals = await Deals.findAll({
+    let bookingsData = await Bookings.findAll({
       raw: true,
       where: {
         userid: id,
-        status: "0",
       },
     });
 
-    deals = await Promise.all(
-      deals.map(async (item) => {
+    bookingsData = await Promise.all(
+      bookingsData.map(async (item) => {
         return await fetchUserInfo(item);
       })
     );
-
+    console.log(bookingsData);
     return res.json({
       message: "Success",
-      deals,
+      bookingsData,
     });
   } catch (error) {
     console.log(error);

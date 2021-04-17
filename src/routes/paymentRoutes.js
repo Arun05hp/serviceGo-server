@@ -14,7 +14,10 @@ router.post("/pay", async (req, res) => {
     expiry,
     cvv,
   } = req.body;
-  const transactionid = uuidv4();
+  // res.json({
+  //   message: "Success",
+  //   payment: { transactionid: "123" },
+  // });
   const cardNo = "12345678912345";
   const expiryDate = "17/21";
   const cvvNo = "256";
@@ -27,7 +30,7 @@ router.post("/pay", async (req, res) => {
     });
 
     if (!deal) return res.status(400).json({ message: "Deal not found" });
-
+    const transactionid = uuidv4();
     if (cardNo === cardnumber && expiryDate === expiry && cvvNo === cvv) {
       const paymentDetails = await Payment.create({
         userid,
