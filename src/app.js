@@ -13,6 +13,7 @@ const dealsRoutes = require("./routes/dealsRoutes");
 const feedbackRoutes = require("./routes/feedbackRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const contactRoutes = require("./routes/contactRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 const { messages, storeMsg } = require("./routes/messageRoute");
 
 app.use(cors());
@@ -26,6 +27,7 @@ app.use("/feedback", feedbackRoutes);
 app.use("/notification", notificationRoutes);
 app.use("/contact", contactRoutes);
 app.use("/messages", messages);
+app.use("/payment", paymentRoutes);
 
 io.on("connection", (socket) => {
   const id = socket.handshake.query.id;
