@@ -28,6 +28,7 @@ module.exports = {
         allowNull: false,
         type: DataTypes.STRING,
       },
+      status: { type: DataTypes.STRING, allowNull: true },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,
