@@ -1,23 +1,14 @@
-const { Deals, Payment, Bookings } = require("../../models");
+const { Deals, Payment, Bookings, User, Jobs } = require("../../models");
 const { v4: uuidv4 } = require("uuid");
+
 const express = require("express");
 
 const router = express.Router();
 
 router.post("/pay", async (req, res) => {
-  const {
-    userid,
-    workerid,
-    amount,
-    dealid,
-    cardnumber,
-    expiry,
-    cvv,
-  } = req.body;
-  // res.json({
-  //   message: "Success",
-  //   payment: { transactionid: "123" },
-  // });
+  const { userid, workerid, amount, dealid, cardnumber, expiry, cvv } =
+    req.body;
+
   const cardNo = "12345678912345";
   const expiryDate = "17/21";
   const cvvNo = "256";
@@ -52,6 +43,18 @@ router.post("/pay", async (req, res) => {
       });
       await deal.save();
 
+      const job = await Jobs.findOne({
+        where: {
+          userid: workerid,
+        },
+      });
+
+      Object.assign(job, {
+        earning: Number(job.dataValues.earning) + Number(amount),
+      });
+
+      await job.save();
+
       await Bookings.create({
         userid,
         workerid,
@@ -82,4 +85,25 @@ router.post("/pay", async (req, res) => {
     return res.status(500).json({ message: error });
   }
 });
+
+router.post("/history", async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    const user = await Payment.findAll({
+      where: {
+        [Op.or]: [{ userid: id }, { workerid: id }],
+      },
+    });
+    console.log(user);
+    res.json({
+      message: "Success",
+      user: user,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error });
+  }
+});
+
 module.exports = router;
