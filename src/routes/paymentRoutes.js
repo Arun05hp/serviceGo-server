@@ -1,15 +1,26 @@
 const { Deals, Payment, Bookings, User, Jobs } = require("../../models");
 const { v4: uuidv4 } = require("uuid");
-
+const { Op } = require("sequelize");
 const express = require("express");
 
 const router = express.Router();
+
+async function fetchUserInfo(item, id) {
+  const userDetails = await User.findOne({
+    raw: true,
+    where: {
+      id: id,
+    },
+    attributes: ["id", "name", "mobileNumber"],
+  });
+  return { ...item, ...userDetails };
+}
 
 router.post("/pay", async (req, res) => {
   const { userid, workerid, amount, dealid, cardnumber, expiry, cvv } =
     req.body;
 
-  const cardNo = "12345678912345";
+  const cardNo = "1234567891234567";
   const expiryDate = "17/21";
   const cvvNo = "256";
 
@@ -88,17 +99,26 @@ router.post("/pay", async (req, res) => {
 
 router.post("/history", async (req, res) => {
   const { id } = req.body;
-
+  console.log(id);
   try {
     const user = await Payment.findAll({
+      raw: true,
       where: {
         [Op.or]: [{ userid: id }, { workerid: id }],
       },
     });
-    console.log(user);
+
+    let data = await Promise.all(
+      user.map(async (item) => {
+        return item.userid === id
+          ? await fetchUserInfo(item, item.workerid)
+          : await fetchUserInfo(item, item.userid);
+      })
+    );
+
     res.json({
       message: "Success",
-      user: user,
+      payments: data,
     });
   } catch (error) {
     console.log(error);

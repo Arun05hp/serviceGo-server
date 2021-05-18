@@ -121,10 +121,13 @@ router.post("/update", (req, res) => {
       if (err instanceof multer.MulterError)
         return res.send({ error: "File Too Large" });
       else if (err) return res.send({ error: "Something Went Wrong" });
-
-      if (req.file) {
-        const data = req.body;
-        const fileUrl = req.file.path.replace(/\\/g, "/").substring(4);
+      const data = req.body;
+      console.log(req.file || data.isEdit);
+      if (req.file || true) {
+        const fileUrl = "";
+        if (!data.profileImg) {
+          fileUrl = req.file.path.replace(/\\/g, "/").substring(4);
+        }
 
         const user = await User.findByPk(data.id);
 
@@ -140,7 +143,9 @@ router.post("/update", (req, res) => {
           });
           await user.save();
         } else {
-          Object.assign(user, { ...data, profileImg: fileUrl, otp: "" });
+          if (!data.profileImg)
+            Object.assign(user, { ...data, profileImg: fileUrl, otp: "" });
+          else Object.assign(user, { ...data, otp: "" });
           await user.save();
         }
         console.log(user.dataValues);
@@ -151,6 +156,7 @@ router.post("/update", (req, res) => {
       }
       res.status(400).json({ message: "Image Not Found" });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: error });
     }
   });
