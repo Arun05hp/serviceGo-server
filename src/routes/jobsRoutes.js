@@ -46,6 +46,7 @@ router.post("/create", (req, res) => {
       let newjob = await Jobs.create({
         ...data,
         images,
+        feedback: [],
       });
 
       res.json({

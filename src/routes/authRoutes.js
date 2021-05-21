@@ -102,19 +102,6 @@ router.put("/register/:id", async (req, res) => {
   console.log("user");
 });
 
-router.post("/image", (req, res) => {
-  uploadImage(req, res, (err) => {
-    if (err instanceof multer.MulterError)
-      return res.send({ error: "File Too Large" });
-    else if (err) return res.send({ error: "Something Went Wrong" });
-
-    let fileUrl = req.file.path.replace(/\\/g, "/").substring(4);
-
-    if (req.file) return res.json({ msg: "Image uploaded" });
-    res.send("Image upload failed");
-  });
-});
-
 router.post("/update", (req, res) => {
   uploadImage(req, res, async (err) => {
     try {
@@ -148,7 +135,6 @@ router.post("/update", (req, res) => {
           else Object.assign(user, { ...data, otp: "" });
           await user.save();
         }
-        console.log(user.dataValues);
         res.json({
           message: "Profile Updated Successfully",
           userDetails: user.dataValues,
@@ -156,7 +142,6 @@ router.post("/update", (req, res) => {
       }
       res.status(400).json({ message: "Image Not Found" });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ message: error });
     }
   });
