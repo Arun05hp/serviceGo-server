@@ -1,13 +1,13 @@
 const { Deals, User, Jobs, Bookings } = require("../../models");
 const express = require("express");
-
+const { Op } = require("sequelize");
 const router = express.Router();
 
-async function fetchUserInfo(item) {
+async function fetchUserInfo(item, id) {
   const userDetails = await User.findOne({
     nest: true,
     where: {
-      id: item.workerid,
+      id: id,
     },
     include: [{ model: Jobs, as: "jobprofile", attributes: ["category"] }],
     attributes: ["id", "name", "mobileNumber", "profileImg"],
@@ -19,7 +19,7 @@ async function fetchUserInfo(item) {
       id: item.dealid,
     },
   });
-  return { ...item, workerProfile: userDetails, dealsDetails };
+  return { ...item, profile: userDetails, dealsDetails };
 }
 
 router.get("/getAll/:id", async (req, res) => {
@@ -29,13 +29,15 @@ router.get("/getAll/:id", async (req, res) => {
     let bookingsData = await Bookings.findAll({
       raw: true,
       where: {
-        userid: id,
+        [Op.or]: [{ userid: id }, { workerid: id }],
       },
     });
 
     bookingsData = await Promise.all(
       bookingsData.map(async (item) => {
-        return await fetchUserInfo(item);
+        return item.userid === id
+          ? await fetchUserInfo(item, item.workerid)
+          : await fetchUserInfo(item, item.userid);
       })
     );
     console.log(bookingsData);
