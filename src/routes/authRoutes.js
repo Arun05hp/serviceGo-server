@@ -3,7 +3,8 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 
-const https = require("https");
+const http = require("http");
+const axios = require("axios");
 const router = express.Router();
 
 const storage = multer.diskStorage({
@@ -21,29 +22,35 @@ const uploadImage = multer({
   },
 }).single("photo");
 
-async function sendOtp(url, options) {
-  const req = await https.request(url, options, (res) => {
-    res.on("data", (d) => {});
-  });
-
-  req.on("error", (error) => {
-    return res.status(400).json({ message: error });
-  });
-
-  req.end();
+async function sendOtp(url, data) {
+  axios
+    .post(url, data)
+    .then((res) => {
+      console.log(`Status: ${res.status}`);
+      console.log("Body: ", res.data);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 }
 
 router.post("/sendOtp", async (req, res) => {
-  const { mobileNumber } = req.body;
+  const { mobileNumber, messageId } = req.body;
+  console.log(messageId);
   //   const { error } = validate(data);
   //   if (error) return res.status(400).json({ message: error.details[0].message });
 
   console.log(mobileNumber);
   let otp = Math.floor(1000 + Math.random() * 9000);
   try {
-    let url = `https://2factor.in/API/R1/?module=TRANS_SMS&apikey=71acc5f0-8420-11eb-a9bc-0200cd936042&to=${mobileNumber}&from=ServGo&templatename=ServiceGo&var1=${otp}`;
-    const options = {
-      method: "POST",
+    let url =
+      "http://2factor.in/API/V1/71acc5f0-8420-11eb-a9bc-0200cd936042/ADDON_SERVICES/SEND/TSMS";
+    const data = {
+      From: "ServGo",
+      To: mobileNumber,
+      TemplateName: "SERVGOTEMP1",
+      VAR1: otp,
+      VAR2: messageId,
     };
 
     const user = await User.findOne({ where: { mobileNumber: mobileNumber } });
@@ -53,11 +60,11 @@ router.post("/sendOtp", async (req, res) => {
         otp: otp,
         status: 0,
       });
-      // sendOtp(url, options);
+      // sendOtp(url, data);
     } else {
       Object.assign(user, { otp: otp });
       await user.save();
-      // sendOtp(url, options);
+      // sendOtp(url, data);
     }
 
     res.json({
@@ -109,9 +116,9 @@ router.post("/update", (req, res) => {
         return res.send({ error: "File Too Large" });
       else if (err) return res.send({ error: "Something Went Wrong" });
       const data = req.body;
-      console.log(req.file || data.isEdit);
+      console.log("data", data);
       if (req.file || true) {
-        const fileUrl = "";
+        let fileUrl = "";
         if (!data.profileImg) {
           fileUrl = req.file.path.replace(/\\/g, "/").substring(4);
         }
